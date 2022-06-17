@@ -2,8 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class Home extends StatelessWidget {
+List<String> _addTodo = ["Bilal", "Ali"];
+
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  TextEditingController addTodoController = TextEditingController();
+
+  addTodof() {
+    setState(() {
+      _addTodo.add(addTodoController.text);
+      addTodoController.clear();
+    });
+  }
+
+  removeNotes(i) {
+    _addTodo.removeAt(i);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,107 +43,161 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8),
-            width: MediaQuery.of(context).size.width * 1,
-            height: MediaQuery.of(context).size.height * 0.08,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: "ADD TODO",
-                      ),
-                    ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8),
+              width: MediaQuery.of(context).size.width * 1,
+              height: MediaQuery.of(context).size.height * 0.08,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.blue.shade600,
-                    ),
-                    child: Center(
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.add,
-                          size: 25,
-                          color: Colors.white,
+                ],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: addTodoController,
+                        decoration: const InputDecoration(
+                          hintText: "ADD TODO",
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.blue.shade600,
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          onPressed: () {
+                            addTodof();
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            size: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            height: MediaQuery.of(context).size.height * 0.8,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-              borderRadius: BorderRadius.circular(20),
+            Container(
+              margin: const EdgeInsets.all(8.0),
+              height: MediaQuery.of(context).size.height * 0.7,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ListView.builder(
+                itemCount: _addTodo.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    trailing: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.edit_note,
+                              color: Colors.blue[600],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                removeNotes(index);
+                              });
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.blue[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    title: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text("${_addTodo[index]} "),
+                    ),
+                  );
+                },
+              ),
             ),
-            child: const AddTodo(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class AddTodo extends StatefulWidget {
-  const AddTodo({Key? key}) : super(key: key);
-
-  @override
-  State<AddTodo> createState() => _AddTodoState();
-}
-
-class _AddTodoState extends State<AddTodo> {
+/*
+class AddTodo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 40,
+        itemCount: _addTodo.length,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            trailing: Icon(
-              Icons.delete,
-              color: Colors.blue[400],
+            trailing: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.edit_note,
+                      color: Colors.blue[600],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.blue[600],
+                    ),
+                  ),
+                ],
+              ),
             ),
             title: Container(
               margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Text("List item \n thats why$index"),
+              child: Text("${_addTodo[index]} $index"),
             ),
           );
         });
   }
 }
+*/
