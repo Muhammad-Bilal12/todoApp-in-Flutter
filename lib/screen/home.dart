@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-List<String> _addTodo = ["Bilal", "Ali"];
+List<String> _addTodo = [];
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController addTodoController = TextEditingController();
+  TextEditingController editTodoController = TextEditingController();
 
   addTodof() {
     setState(() {
@@ -23,6 +24,11 @@ class _HomeState extends State<Home> {
 
   removeNotes(i) {
     _addTodo.removeAt(i);
+  }
+
+  editTodo(i) {
+    _addTodo[i] = editTodoController.text;
+    editTodoController.clear();
   }
 
   @override
@@ -127,7 +133,36 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text("Edit Todo"),
+                                  content: TextField(
+                                    decoration: const InputDecoration(
+                                        hintText: "Edit Your Todo"),
+                                    controller: editTodoController,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          editTodo(index);
+                                          Navigator.pop(context, "Edit");
+                                        });
+                                      },
+                                      child: const Text("Edit"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, 'Cancel');
+                                      },
+                                      child: const Text("Cancel"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                             icon: Icon(
                               Icons.edit_note,
                               color: Colors.blue[600],
@@ -161,43 +196,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-/*
-class AddTodo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: _addTodo.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            trailing: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.edit_note,
-                      color: Colors.blue[600],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.blue[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            title: Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Text("${_addTodo[index]} $index"),
-            ),
-          );
-        });
-  }
-}
-*/
